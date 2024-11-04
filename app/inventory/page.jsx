@@ -15,7 +15,6 @@ import Alerts from "../components/alerts";
 
 
 export default function Inventory() {
-
     const columns = [
         {
             field: "image",
@@ -116,7 +115,7 @@ export default function Inventory() {
         id: null,
         name: "",
         unit: "",
-        existence: 0,
+        existence: "",
         image: null
     });
 

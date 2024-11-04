@@ -1,3 +1,4 @@
+// Constants for inventorty page.
 export const initialRows = [
     {
         id: 1,

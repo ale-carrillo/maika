@@ -7,13 +7,13 @@ export default function Footer() {
 
     <Container maxWidth="lg" sx={{ bgcolor: '#f8f9fa', py: 4 }}>
       <Grid container spacing={4}>
-        <Grid item xs={12} md={3}>
+        <Grid xs={12} md={3}>
           <Typography variant="h6" component="div" gutterBottom>
             <img src="/Icons_sf37i/Misc/Knight (Front).png" alt="Logo" style={{ width: '50px' }} />
           </Typography>
         </Grid>
 
-        <Grid item xs={6} md={2}>
+        <Grid  xs={6} md={2}>
           <Typography variant="subtitle1" gutterBottom>
              Our Services
           </Typography>
@@ -21,7 +21,7 @@ export default function Footer() {
           <Link href="#" variant="body2" display="block" color="textSecondary">Pricing</Link>
         </Grid>
 
-        <Grid item xs={6} md={2}>
+        <Grid  xs={6} md={2}>
           <Typography variant="subtitle1" gutterBottom>
             Resources
           </Typography>
@@ -30,7 +30,7 @@ export default function Footer() {
           <Link href="#" variant="body2" display="block" color="textSecondary">Webinars</Link>
         </Grid>
 
-        <Grid item xs={6} md={2}>
+        <Grid  xs={6} md={2}>
           <Typography variant="subtitle1" gutterBottom>
             Company
           </Typography>
@@ -38,7 +38,7 @@ export default function Footer() {
           <Link href="#" variant="body2" display="block" color="textSecondary">Join us</Link>
         </Grid>
 
-        <Grid item xs={12} ml='auto'>
+        <Grid  xs={12} ml='auto'>
           <Typography variant="subtitle1" gutterBottom>
             Subscribe to our newsletter
           </Typography>

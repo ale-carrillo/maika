@@ -1,3 +1,4 @@
+// Imports.
 import {
   Dialog,
   DialogActions,
@@ -11,6 +12,7 @@ import {
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
+// Inventory dialog.
 export default function InventoryDialog({
   open,
   setOpen,
@@ -22,17 +24,23 @@ export default function InventoryDialog({
   setAlert,
   setOpenAlert,
 }) {
+  // States.
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [errors, setErrors] = useState({});
 
+  // Handle functions.
+
+  //Close dialog.
   const handleCloseDialog = () => {
     setSelectedImage(null);
     setErrors({});
     setOpen(false);
   };
 
+  // Validate fields.
   const validateFields = () => {
+    // Build error objects.
     const newErrors = {};
     if (!inventory.name) newErrors.name = "Name is required.";
     if (!inventory.unit) newErrors.unit = "Unit is required.";
@@ -42,7 +50,9 @@ export default function InventoryDialog({
     return Object.keys(newErrors).length === 0;
   };
 
+  // Save inventory.
   const saveInventory = () => {
+    // Validate fields.
     if (!validateFields()) {
       setAlert({
         message: "Please fill all required fields correctly.",
@@ -52,12 +62,14 @@ export default function InventoryDialog({
       return;
     }
 
+    // Build the new object for inventory.
     const updatedInventory = {
       ...inventory,
       existence: +inventory.existence,
       image: selectedImage ? URL.createObjectURL(selectedImage) : inventory.image,
     };
 
+    // Select if add or edit the inventory.
     if (action === "add") {
       updatedInventory.id = Math.max(...rows.map((i) => i.id), 1) + 1;
       setRows([...rows, updatedInventory]);
@@ -78,6 +90,7 @@ export default function InventoryDialog({
     handleCloseDialog();
   };
 
+  // Handle text inputs change.
   const handleChange = (event) => {
     setInventory({
       ...inventory,
@@ -85,9 +98,12 @@ export default function InventoryDialog({
     });
   };
 
+  // Handle image change.
   const handleImageChange = (event) => {
+    // If a image was selected.
     const file = event.target.files[0];
     if (file) {
+      // Validate file type.
       if (file.type.startsWith("image/")) {
         setSelectedImage(file);
         const imageUrl = URL.createObjectURL(file);
@@ -102,6 +118,7 @@ export default function InventoryDialog({
     }
   };
 
+  // Display current image always if edition is else displays nothing.
   useEffect(() => {
     if (action === "edit" && inventory.image) {
       setImagePreview(inventory.image);
@@ -110,6 +127,7 @@ export default function InventoryDialog({
     }
   }, [inventory, action]);
 
+  // Component.
   return (
     <Dialog open={open} onClose={handleCloseDialog}>
       <DialogTitle>{action === "add" ? "Add" : "Edit"} Inventory</DialogTitle>

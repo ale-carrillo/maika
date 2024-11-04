@@ -1,5 +1,6 @@
 "use client";
 
+// Imports.
 import { Typography, Box, Paper, IconButton, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
@@ -12,9 +13,9 @@ import { initialRows } from "../constants/inventory/constants";
 import InventoryDialog from "../components/inventory-dialog";
 import Alerts from "../components/alerts";
 
-
-
+// Inventory page.
 export default function Inventory() {
+    // DataGrid columns.
     const columns = [
         {
             field: "image",
@@ -110,6 +111,7 @@ export default function Inventory() {
         },
     ];
 
+    // States.
     const [action, setAction] = useState("");
     const [inventory, setInventory] = useState({
         id: null,
@@ -118,7 +120,6 @@ export default function Inventory() {
         existence: "",
         image: null
     });
-
     const [openDialog, setOpenDialog] = useState(false);
     const [rows, setRows] = useState(initialRows);
     const [openAlert, setOpenAlert] = useState(false);
@@ -127,7 +128,11 @@ export default function Inventory() {
         severity: "",
     });
 
+    // Handle functions.
+
+    // Decrease existence where id matches.
     const decreaseInventory = (id) => {
+        // Validate index.
         const index = rows.findIndex((item) => item.id === id);
 
         if (index === -1) {
@@ -135,6 +140,7 @@ export default function Inventory() {
             return;
         }
 
+        // Decrease existence or delete item if existence is zero.
         if (rows[index].existence > 1) {
             rows[index].existence--;
             setRows(rows);
@@ -148,7 +154,9 @@ export default function Inventory() {
         }
     };
 
+    // Increase existence where id matches.
     const increaseInventory = (id) => {
+        // Validate index.
         const index = rows.findIndex((item) => item.id === id);
 
         if (index === -1) {
@@ -156,6 +164,7 @@ export default function Inventory() {
             return;
         }
 
+        // Increase existence.
         rows[index].existence++;
         setRows(rows);
         setAlert({
@@ -165,9 +174,15 @@ export default function Inventory() {
         setOpenAlert(true);
     };
 
+    // Edit or add inventory.
     const handleInventory = ({ action, inventory }) => {
+        // Update action.
         setAction(action);
+        
+        // Open dialog.
         setOpenDialog(true);
+
+        // Select action.
         if (action == "add") {
             setInventory({
                 id: null,
@@ -183,7 +198,10 @@ export default function Inventory() {
         }
     };
 
+    // Delete inventory where id matches.
     const deleteInventory = (id) => {
+
+        // Delete inventory.
         setRows(rows.filter((row) => row.id !== id));
         setAlert({
             message: "Inventory deleted successfully!",
@@ -191,6 +209,8 @@ export default function Inventory() {
         });
         setOpenAlert(true);
     };
+
+    // Component.
     return (
         <Box
             sx={{ mx: "10%" }}

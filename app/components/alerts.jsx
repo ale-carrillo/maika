@@ -1,10 +1,15 @@
+// Imports.
 import { Snackbar, Alert } from "@mui/material";
 
+// Alert component.
 export default function Alerts({ open, setOpen, alert }) {
+
+  // Close dialog.
   const handleClose = () => {
     setOpen(false);
   };
 
+  // Component.
   return (
     <Snackbar
       open={open}

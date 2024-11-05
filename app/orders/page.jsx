@@ -63,7 +63,7 @@ export default function App() {
   };
 
   return (
-    <Container>
+    <Container sx={{ minHeight: "500px" }}>
       <Typography variant="h4" gutterBottom align="center">
         Orders
       </Typography>

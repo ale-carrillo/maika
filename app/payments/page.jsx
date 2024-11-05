@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import {
   Container,
@@ -15,7 +17,7 @@ import { orders as initialOrders } from '../constants/home/orders'; // Adjust th
 import Grid from "@mui/material/Grid2";
 import Alerts from '../components/alerts'; // Import the Alerts component
 
-function TicketPage() {
+export default function TicketPage() {
   const [openDialog, setOpenDialog] = useState(false); // State to manage dialog visibility
   const [selectedOrder, setSelectedOrder] = useState(null); // State to hold the selected order
   const [paymentMethod, setPaymentMethod] = useState(''); // State for payment method
@@ -47,13 +49,13 @@ function TicketPage() {
   };
 
   return (
-    <Container>
+    <Container sx={{ py: 12 }}>
       <Typography variant="h4" gutterBottom align="center">
         Select an Order to Generate a Ticket
       </Typography>
       <Grid container spacing={2}>
         {orders.map((order, index) => (
-          <Grid item key={index} xs={12} sm={6} md={4}>
+          <Grid key={index} xs={12} sm={6} md={4}>
             <Paper style={{ padding: '16px', margin: '8px 0' }}>
               <Typography variant="h6">Order #{index + 1}</Typography>
               <Typography>Name: {order.name}</Typography>
@@ -129,5 +131,3 @@ function TicketPage() {
     </Container>
   );
 }
-
-export default TicketPage;

@@ -42,18 +42,18 @@ export default function Home() {
     },
     {
       icon: TableRestaurantIcon,
-      label: "Tables and Orders",
-      href: "/tablesorders"
+      label: "Orders",
+      href: "/orders"
     },
     {
       icon: ReceiptIcon,
-      label: "Receipts",
-      href: "/receipts"
+      label: "Payments",
+      href: "/payments"
     },
     {
       icon: AccountCircleIcon,
-      label: "Users and Roles",
-      href: "/usersroles"
+      label: "Employees",
+      href: "/employee"
     },
   ];
 

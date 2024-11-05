@@ -1,24 +1,22 @@
-"use client"; // Puedes omitir esto si no es necesariWe can ommit this is not necesary 
+"use client"; 
 
 import { createTheme } from "@mui/material";
 
 export const theme = createTheme({
   palette: {
     primary: {
-      main: "#800020",
+      main: "#731225"
     },
     secondary: {
       main: "#C0A35E",
     },
     background: {
-      default: "#FDF6E3",
+      default: "#fefdff",
+      date: "#f1f1f1",
     },
     text: {
       primary: "#000000",
-      secondary: "#7D7D7D",
-    },
-    highlight: {
-      main: "#50C878",
+      secondary: "#AEAEAE",
     },
   },
   typography: {

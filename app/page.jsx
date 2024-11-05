@@ -60,6 +60,7 @@ export default function Home() {
   // Component.
   return (
     <Container maxWidth="lg">
+
       <Grid container spacing={4} display="flex" justifyContent="center" alignItems="center">
         <Grid size={{ xs: 12 }} display="flex" justifyContent="center">
           <Box

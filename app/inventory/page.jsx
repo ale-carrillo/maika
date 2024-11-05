@@ -1,7 +1,7 @@
 "use client";
 
 // Imports.
-import { Typography, Box, Paper, IconButton, Button } from "@mui/material";
+import { Typography, Box, Paper, IconButton, Button, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
 import Image from "next/image";
@@ -15,6 +15,8 @@ import Alerts from "../components/alerts";
 
 // Inventory page.
 export default function Inventory() {
+    // Theme.
+    const theme = useTheme();
     // DataGrid columns.
     const columns = [
         // Image.

@@ -10,6 +10,7 @@ import {
   FormControlLabel,
   TextField,
 } from "@mui/material";
+import Image from "next/image";
 import { useState } from "react";
 
 // Defining the EmpDialog component, which receives props for managing employee data and dialog visibility

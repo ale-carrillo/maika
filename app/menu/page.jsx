@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Container, Typography, Box, useTheme, Button } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import RestaurantIcon from '@mui/icons-material/Restaurant';
+import Image from "next/image";
 
 //Here, we define the names of the buttons that we will use to switch between the diferent meals
 export default function Menu(){
@@ -90,9 +91,10 @@ export default function Menu(){
                                   sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
                                   Spaghetti - $10
                                   </Typography>
-                                  <img 
+                                  <Image 
                                     src="/spagetti.jpg" //here we use our food image 
                                     alt="Spaghetti"
+                                    width={300} height={300}
                                     style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
                                   />
                                 </Box>
@@ -113,9 +115,10 @@ export default function Menu(){
                                   sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
                                   Lasagna - $10
                                   </Typography>
-                                  <img 
+                                  <Image 
                                     src="/lasagna.png" //here we use our image 
                                     alt="Lasagna"
+                                    width={300} height={300}
                                     style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
                                   />
                                 </Box>
@@ -135,9 +138,10 @@ export default function Menu(){
                                   sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
                                   Risotto - $10
                                   </Typography>
-                                  <img 
+                                  <Image 
                                     src="/risotto.jpg" //here we use our image 
                                     alt="Risotto"
+                                    width={300} height={300}
                                     style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
                                   />
                                 </Box>
@@ -157,9 +161,10 @@ export default function Menu(){
                                   sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
                                   Fettuccine Alfredo - $10
                                   </Typography>
-                                  <img 
+                                  <Image 
                                     src="/fetuccini.jpg" //here we use our image 
                                     alt="Fettuccine Alfredo"
+                                    width={300} height={300}
                                     style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
                                   />
                                 </Box>
@@ -179,9 +184,10 @@ export default function Menu(){
                                   sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
                                   Penne Arrabbiata - $10
                                   </Typography>
-                                  <img 
+                                  <Image 
                                     src="/Penne.jpg" //here we use our image 
                                     alt="Penne Arrabbiata"
+                                    width={300} height={300}
                                     style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
                                   />
                                 </Box>
@@ -214,9 +220,10 @@ export default function Menu(){
                                   sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
                                   Caprese Salad - $10
                                   </Typography>
-                                  <img 
+                                  <Image 
                                     src="/caprese.jpg" //here we use our image 
                                     alt="Caprese Salad"
+                                    width={300} height={300}
                                     style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
                                   />
                                 </Box>
@@ -237,9 +244,10 @@ export default function Menu(){
                                   sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
                                   Osso Buco - $10
                                   </Typography>
-                                  <img 
+                                  <Image 
                                     src="/osso.jpg" //here we use our image 
                                     alt="Osso Buco"
+                                    width={300} height={300}
                                     style={{ marginTop: '16px', maxWidth: '45%', height: 'auto', borderRadius: "15px" }} 
                                   />
                                 </Box>
@@ -259,9 +267,10 @@ export default function Menu(){
                                   sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
                                   Tiramisu - $10
                                   </Typography>
-                                  <img 
+                                  <Image 
                                     src="/tiramisu.jpg" //here we use our image 
                                     alt="Tiramisu"
+                                    width={300} height={300}
                                     style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
                                   />
                                 </Box>
@@ -281,9 +290,10 @@ export default function Menu(){
                                   sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
                                   Bruschetta - $10
                                   </Typography>
-                                  <img 
+                                  <Image 
                                     src="/bruschetta.jpg" //here we use our image 
                                     alt="Bruschetta"
+                                    width={300} height={300}
                                     style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
                                   />
                                 </Box>
@@ -303,9 +313,10 @@ export default function Menu(){
                                   sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
                                   Arancini - $10
                                   </Typography>
-                                  <img 
+                                  <Image 
                                     src="/arancini.jpg" //here we use our image 
                                     alt="Arancini"
+                                    width={300} height={300}
                                     style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
                                   />
                                 </Box>

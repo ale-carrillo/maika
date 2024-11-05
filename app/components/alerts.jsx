@@ -1,10 +1,15 @@
-import { Alert, Snackbar } from "@mui/material";
+// Imports.
+import { Snackbar, Alert } from "@mui/material";
 
-export default function Alerts({ open, setOPen, alert, setAlert }) {
+// Alert component.
+export default function Alerts({ open, setOpen, alert }) {
+
+  // Close dialog.
   const handleClose = () => {
-    setOPen(false);
+    setOpen(false);
   };
 
+  // Component.
   return (
     <Snackbar
       open={open}

@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid2";
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 
 //Here, we define the names of the buttons that we will use to switch between the diferent meals
-export default function menu(){
+export default function Menu(){
     const theme = useTheme();
     const nombresBotones = [
       'STARTER',

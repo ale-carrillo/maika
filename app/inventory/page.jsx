@@ -17,89 +17,105 @@ import Alerts from "../components/alerts";
 export default function Inventory() {
     // DataGrid columns.
     const columns = [
+        // Image.
         {
             field: "image",
             headerName: "Image",
             width: 300,
-            renderCell: (params) => (
-                <Box
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: "100%",
-                        height: "100%",
-                    }}
-                >
+            renderCell: (params) => {
+                // Inventory element image render.
+                return (
                     <Box
                         sx={{
-                            width: 250,
-                            height: 150,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            overflow: "hidden",
-                            borderRadius: 2,
+                            width: "100%",
+                            height: "100%",
                         }}
                     >
-                        <Image
-                            src={params.row.image}
-                            alt={params.row.name}
-                            layout="responsive"
-                            width={100}
-                            height={100}
-                            style={{ objectFit: "fill" }}
-                        />
+                        <Box
+                            sx={{
+                                width: 250,
+                                height: 150,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                overflow: "hidden",
+                                borderRadius: 2,
+                            }}
+                        >
+                            <Image
+                                src={params.row.image}
+                                alt={params.row.name}
+                                layout="responsive"
+                                width={100}
+                                height={100}
+                                style={{ objectFit: "fill" }}
+                            />
+                        </Box>
                     </Box>
-                </Box>
-            ),
+                )
+            },
         },
+        // Name.
         { field: "name", headerName: "Name", flex: 1 },
+        // Unit.
         { field: "unit", headerName: "Unit", flex: 1 },
+        // Existence.
         {
             field: "existence",
             headerName: "Existence",
             flex: 1,
-            renderCell: (params) => (
-                <Box
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 4,
-                        height: "100%",
-                    }}
-                >
-                    <IconButton
-                        onClick={() => decreaseInventory(params.row.id)}
-                        color="primary"
+            renderCell: (params) => {
+                // Existence inventory element render.
+                return (
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: 4,
+                            height: "100%",
+                        }}
                     >
-                        <RemoveIcon />
-                    </IconButton>
-                    <Typography>
-                        {params.row.existence}
-                    </Typography>
-                    <IconButton
-                        onClick={() => increaseInventory(params.row.id)}
-                        color="primary"
-                    >
-                        <AddIcon />
-                    </IconButton>
-                </Box>
-            ),
+                        {/* Decrease existence. */}
+                        <IconButton
+                            onClick={() => decreaseInventory(params.row.id)}
+                            color="primary"
+                        >
+                            <RemoveIcon />
+                        </IconButton>
+                        {/* Current existence. */}
+                        <Typography>
+                            {params.row.existence}
+                        </Typography>
+                        {/* Increase existence. */}
+                        <IconButton
+                            onClick={() => increaseInventory(params.row.id)}
+                            color="primary"
+                        >
+                            <AddIcon />
+                        </IconButton>
+                    </Box>
+                )
+            },
         },
+        // Actions
         {
             field: "actions",
             headerName: "Actions",
             width: 110,
             renderCell: (params) => (
                 <Box>
+                    {/* Edit. */}
                     <IconButton
                         onClick={() => handleInventory({ action: "edit", inventory: params.row })}
                         color="primary"
                     >
                         <EditIcon />
                     </IconButton>
+                    {/* Delete. */}
                     <IconButton
                         onClick={() => deleteInventory(params.row.id)}
                         color="secondary"
@@ -136,6 +152,11 @@ export default function Inventory() {
         const index = rows.findIndex((item) => item.id === id);
 
         if (index === -1) {
+            setAlert({
+                message: "Inventory not found.",
+                severity: "error",
+            });
+            setOpenAlert(true);
             console.warn("ID not found:", id);
             return;
         }
@@ -149,6 +170,7 @@ export default function Inventory() {
                 severity: "success",
             });
             setOpenAlert(true);
+            console.info("Inventory decreased successfully!");
         } else {
             deleteInventory(id);
         }
@@ -160,6 +182,11 @@ export default function Inventory() {
         const index = rows.findIndex((item) => item.id === id);
 
         if (index === -1) {
+            setAlert({
+                message: "Inventory not found.",
+                severity: "error",
+            });
+            setOpenAlert(true);
             console.warn("ID not found:", id);
             return;
         }
@@ -172,13 +199,14 @@ export default function Inventory() {
             severity: "success",
         });
         setOpenAlert(true);
+        console.info("Inventory increased successfully!");
     };
 
     // Edit or add inventory.
     const handleInventory = ({ action, inventory }) => {
         // Update action.
         setAction(action);
-        
+
         // Open dialog.
         setOpenDialog(true);
 
@@ -200,7 +228,6 @@ export default function Inventory() {
 
     // Delete inventory where id matches.
     const deleteInventory = (id) => {
-
         // Delete inventory.
         setRows(rows.filter((row) => row.id !== id));
         setAlert({
@@ -208,6 +235,7 @@ export default function Inventory() {
             severity: "success",
         });
         setOpenAlert(true);
+        console.info("Inventory deleted successfully!");
     };
 
     // Component.
@@ -221,7 +249,7 @@ export default function Inventory() {
             >
                 Inventory
             </Typography>
-
+            {/* Add inventory button. */}
             <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
                 <Button
                     startIcon={<AddIcon />}
@@ -241,6 +269,7 @@ export default function Inventory() {
                     height: "600px",
                 }}
             >
+                {/* Inventory table. */}
                 <DataGrid
                     columns={columns}
                     rows={rows}
@@ -272,6 +301,7 @@ export default function Inventory() {
                     }}
                 />
             </Paper>
+            {/* Inventory for creation/edition dialog. */}
             <InventoryDialog
                 open={openDialog}
                 setOpen={setOpenDialog}
@@ -283,6 +313,7 @@ export default function Inventory() {
                 setAlert={setAlert}
                 setOpenAlert={setOpenAlert}
             />
+            {/* Alert. */}
             <Alerts open={openAlert} setOpen={setOpenAlert} alert={alert} />
         </Box>
     );

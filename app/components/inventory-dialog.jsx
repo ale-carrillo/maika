@@ -40,7 +40,7 @@ export default function InventoryDialog({
 
   // Validate fields.
   const validateFields = () => {
-    // Build error objects.
+    // Build error object.
     const newErrors = {};
     if (!inventory.name) newErrors.name = "Name is required.";
     if (!inventory.unit) newErrors.unit = "Unit is required.";
@@ -59,6 +59,7 @@ export default function InventoryDialog({
         severity: "error",
       });
       setOpenAlert(true);
+      console.warn("Please fill all required fields correctly.");
       return;
     }
 
@@ -78,6 +79,7 @@ export default function InventoryDialog({
         severity: "success",
       });
       setOpenAlert(true);
+      console.info("Inventory added successfully!");
     } else if (action === "edit") {
       setRows(rows.map((e) => (e.id === updatedInventory.id ? updatedInventory : e)));
       setAlert({
@@ -85,6 +87,7 @@ export default function InventoryDialog({
         severity: "success",
       });
       setOpenAlert(true);
+      console.info("Inventory saved successfully!");
     }
 
     handleCloseDialog();
@@ -114,6 +117,7 @@ export default function InventoryDialog({
           severity: "error",
         });
         setOpenAlert(true);
+        console.warn("Please upload a valid image file.");
       }
     }
   };
@@ -132,6 +136,7 @@ export default function InventoryDialog({
     <Dialog open={open} onClose={handleCloseDialog}>
       <DialogTitle>{action === "add" ? "Add" : "Edit"} Inventory</DialogTitle>
       <DialogContent>
+        {/* Name field. */}
         <TextField
           margin="dense"
           name="name"
@@ -142,6 +147,7 @@ export default function InventoryDialog({
           error={!!errors.name}
           helperText={errors.name}
         />
+        {/* Unit field. */}
         <TextField
           margin="dense"
           name="unit"
@@ -152,6 +158,7 @@ export default function InventoryDialog({
           error={!!errors.unit}
           helperText={errors.unit}
         />
+        {/* Existence field. */}
         <TextField
           margin="dense"
           name="existence"
@@ -164,6 +171,7 @@ export default function InventoryDialog({
           helperText={errors.existence}
           inputProps={{ min: 0 }}
         />
+        {/* Image field. */}
         <TextField
           type="file"
           name="image"
@@ -173,6 +181,7 @@ export default function InventoryDialog({
           helperText={errors.image}
           sx={{ mb: 2 }}
         />
+        {/* Image preview. */}
         {imagePreview && (
           <Box sx={{ mb: 2 }}>
             <Typography variant="body1">Image Preview:</Typography>
@@ -186,6 +195,7 @@ export default function InventoryDialog({
           </Box>
         )}
       </DialogContent>
+      {/* Action buttons. */}
       <DialogActions>
         <Button color="secondary" onClick={handleCloseDialog}>
           Cancel

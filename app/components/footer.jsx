@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 export default function Footer() {
     return (
-        <Box sx={{ bgcolor: '#f8f9fa', p: 8 }}>
+        <Box sx={{ bgcolor: '#f8f9fa', p: 8, mt: 4 }}>
             <Grid container spacing={4}>
                 <Grid xs={12} md={3}>
                     <Typography variant="h6" component="div" gutterBottom>

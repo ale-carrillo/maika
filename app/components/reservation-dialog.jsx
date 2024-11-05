@@ -81,14 +81,6 @@ import {
          });
          setOpenAlert(true);
       }
-      if (!isFormValid()) {
-        setAlert({
-            message: "Please fill all required fields correctly.",
-            severity: "error",
-        });
-        setOpenAlert(true);
-        return; 
-    }
       handleCloseDialog();
    };
   
@@ -198,10 +190,12 @@ import {
 
   {/*Function to manage time change*/}
   const handleDateChange = (newDate) => {
-    setReservation({ ...reservation, date: newDate.format("DD MMM YYYY") });
+    if (newDate && newDate.isValid()) {
+      setReservation({ ...reservation, date: newDate });
+    }
   };
-
-  {/*Function to not change the reservation time*/}
+  
+  {/*Function to not change the reservation time */}
   useEffect(() => {
     if (open && reservation.date) {
       const dateTime = dayjs(reservation.date, "DD MMM YYYY HH:mm");
@@ -209,21 +203,6 @@ import {
     }
   }, [open, reservation.date]);
   
-
-  {/*Function to validate that fields are not empty*/}
-  const isFormValid = () => {
-    return (
-        reservation.date.trim() !== "" &&
-        reservation.people.trim() !== "" &&
-        reservation.t_reservation.trim() !== "" &&
-        reservation.last_name.trim() !== "" &&
-        reservation.phone.trim() !== "" &&
-        reservation.email.trim() !== "" &&
-
-        !phoneError &&
-        !emailError
-    );
-};
     
 
     return (
@@ -509,7 +488,7 @@ import {
           <Button onClick={handleCloseDialog} color="secondary">
             Cancel
           </Button>
-          <Button onClick={saveReservation} color="primary" variant="contained" disabled={!isFormValid()}>
+          <Button onClick={saveReservation} color="primary" variant="contained" >
             {action === "add" ? "Add" : "Edit"}
           </Button>
         </DialogActions>

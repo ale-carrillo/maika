@@ -189,7 +189,7 @@ export default function EmployeeTable() {
 
       <EmpDialog
         open={openDialog}
-        setOPen={setOpenDialog}
+        setOpen={setOpenDialog}
         emp={employee}
         setemp={setEmp}
         action={action}
@@ -198,7 +198,7 @@ export default function EmployeeTable() {
         setAlert={setAlert}
         setOpenAlert={setOpenAlert}
       />
-      <Alerts open={openAlert} setOPen={setOpenAlert} alert={alert} setAlert={setAlert} />
+      <Alerts open={openAlert} setOpen={setOpenAlert} alert={alert} setAlert={setAlert} />
     </Container>
   );
 }

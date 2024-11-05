@@ -15,7 +15,7 @@ import { useState } from "react";
 // Defining the EmpDialog component, which receives props for managing employee data and dialog visibility
 export default function EmpDialog({
   open, // Controls whether the dialog is open or closed
-  setOPen, // Function to set the open state of the dialog
+  setOpen, // Function to set the open state of the dialog
   emp, // Current employee data object
   setemp, // Function to update the employee data object
   action, // Action type, either "add" or "edit" to determine the dialog purpose
@@ -29,7 +29,7 @@ export default function EmpDialog({
 
   // Function to handle closing the dialog
   const handleCloseDialog = () => {
-    setOPen(false); // Closes the dialog
+    setOpen(false); // Closes the dialog
     setPreviewAvatar(emp.avatar || ""); // Resets the avatar preview to the current employee's avatar
   };
 

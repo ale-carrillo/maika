@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import dayjs from 'dayjs';
-import { IconButton, Paper, Box, Container, useTheme, Typography, useMediaQuery, Button, InputBase, TextField, Stack } from '@mui/material';
+import { IconButton, Paper, Box, Container, useTheme, Typography, Button, InputBase, TextField } from '@mui/material';
 
 import { useState } from "react";
 
@@ -61,7 +61,7 @@ export default function Reservations() {
   {/*Status to handle reservation details*/}
   const [reservation, setReservation] = useState({
     id: null,
-    date: "",
+    date: dayjs().format("DD MMM YYYY HH:mm"),
     people: "",
     t_reservation: "",
     name: "",
@@ -83,7 +83,7 @@ export default function Reservations() {
       console.log("Preparing to add a new Reservation");
       setReservation({
         id: null,
-        date: "",
+        date: dayjs().format("DD MMM YYYY HH:mm"),
         people: "",
         t_reservation: "",
         name: "",

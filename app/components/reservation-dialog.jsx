@@ -22,7 +22,7 @@ import {
   import dayjs from "dayjs";
   import Grid from "@mui/material/Grid2";
   
-  import { useState } from "react";
+  import { useState, useEffect } from "react";
   import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
   import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
   import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
@@ -62,7 +62,7 @@ import {
       const combinedDateTime = dayjs(reservation.date).set('hour', time.hour()).set('minute', time.minute());
       const reservationWithDateOnly = {
          ...reservation,
-         date: combinedDateTime.format("DD MMM YYYY HH:mm") + ' hrs',
+         date: combinedDateTime.format("DD MMM YYYY HH:mm"),
       };
    
       if (action === "add") {
@@ -116,6 +116,7 @@ import {
         if (!isValid) {
           setAlert({ message: "Invalid phone number", severity: "error" });
           setOpenAlert(true);
+          console.warn("Invalid phone number entered")
         }
       } else if (label === "Email") {
         const isValid = validateEmail(e.target.value);
@@ -123,12 +124,14 @@ import {
         if (!isValid) {
           setAlert({ message: "Invalid email", severity: "error" });
           setOpenAlert(true);
+          console.warn("Invalid email entered")
         }
       }
     };
   
     const [time, setTime] = useState(dayjs().set("hour", 8).set("minute", 0));  
 
+    {/*Function to be able to change the hours with a limit of 8 am to 11 pm*/}
     const changeHours = (amount) => {
       let newHour = time.hour() + amount;
     
@@ -141,6 +144,7 @@ import {
       setTime(time.set("hour", newHour));
     };
   
+    {/*Function to change the minutes from 15 to 15*/}
     const changeMinutes = (amount) => {
       let newMinute = time.minute() + amount * 15;
     
@@ -196,6 +200,15 @@ import {
   const handleDateChange = (newDate) => {
     setReservation({ ...reservation, date: newDate.format("DD MMM YYYY") });
   };
+
+  {/*Function to not change the reservation time*/}
+  useEffect(() => {
+    if (open && reservation.date) {
+      const dateTime = dayjs(reservation.date, "DD MMM YYYY HH:mm");
+      setTime(dateTime);
+    }
+  }, [open, reservation.date]);
+  
 
   {/*Function to validate that fields are not empty*/}
   const isFormValid = () => {

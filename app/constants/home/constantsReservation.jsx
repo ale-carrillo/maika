@@ -1,7 +1,7 @@
 export const initialRows = [
     {
         id: 1,
-        date: "26 Dec 2024 10:30 hrs",
+        date: "26 Dec 2024 10:30",
         people: "2",
         t_reservation: "Romantic",
         name: "Anthony",
@@ -12,23 +12,23 @@ export const initialRows = [
     },
     {
         id: 2,
-        date: "06 Nov 2024 22:45 hrs",
+        date: "06 Nov 2024 22:45",
         people: "6",
         t_reservation: "Premium",
         name: "Justine",
         last_name: "Bibier",
         phone: "0987654321",
         email: "jbb@gmail.com",
-        special: null,
+        special: "",
     },
     {
         id: 3,
-        date: "01 Jan 2024 18:30 hrs",
+        date: "01 Jan 2024 18:30",
         people: "8",
         t_reservation: "International menu",
         name: "Hasley",
         last_name: "Wight",
         phone: "6789054321",
         email: "hwee@gmail.com",
-        special: null,
+        special: "",
     },]

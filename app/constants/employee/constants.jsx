@@ -5,18 +5,18 @@ export const initialRows = [
         name: "Laura Martínez",
         title: "Cheff",
         email: "laura.martinez@empresa.com",
-        salary: "45000",
-        birthdate: "15-03-1985",
+        salary: 45000,
+        birthdate: "2024-11-05",
         status: "Active",
         avatar: "https://randomuser.me/api/portraits/women/1.jpg"
     },
     {
         id: 2,
         name: "Carlos Gómez",
-        title: "Cocinero",
+        title: "Cooker",
         email: "carlos.gomez@empresa.com",
-        salary: "32000",
-        birthdate: "22-07-1990",
+        salary: 32000,
+        birthdate: "2024-11-05",
         status: "Active",
         avatar: "https://randomuser.me/api/portraits/men/1.jpg"
 
@@ -24,10 +24,10 @@ export const initialRows = [
     {
         id: 3,
         name: "María López",
-        title: "Mesera",
+        title: "Waitress",
         email: "maria.lopez@empresa.com",
-        salary: "38000",
-        birthdate: "10-12-1992",
+        salary: 38000,
+        birthdate: "2024-11-05",
         status: "Active",
         avatar: "https://randomuser.me/api/portraits/women/2.jpg"
 
@@ -35,10 +35,10 @@ export const initialRows = [
     {
         id: 4,
         name: "Pedro Sánchez",
-        title: "Gerente de Restaurante",
+        title: "Manager",
         email: "pedro.sanchez@empresa.com",
-        salary: "34000",
-        birthdate: "05-09-1987",
+        salary: 34000,
+        birthdate: "2024-11-05",
         status: "Inactive",
         avatar: "https://randomuser.me/api/portraits/men/2.jpg"
 
@@ -48,8 +48,8 @@ export const initialRows = [
         name: "Ana Fernández",
         title: "Hostess",
         email: "ana.fernandez@empresa.com",
-        salary: "40000",
-        birthdate: "17-11-1983",
+        salary: 40000,
+        birthdate: "2024-11-05",
         status: "Active",
         avatar: "https://randomuser.me/api/portraits/women/3.jpg"
 

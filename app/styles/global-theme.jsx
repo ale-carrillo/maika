@@ -1,4 +1,4 @@
-"use client"; // Puedes omitir esto si no es necesario
+"use client"; // Puedes omitir esto si no es necesariWe can ommit this is not necesary 
 
 import { createTheme } from "@mui/material";
 

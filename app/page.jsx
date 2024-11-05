@@ -27,6 +27,9 @@ export default function Home() {
       >
         MAIKA
       </Typography>
+      <Button href="/orders">
+        Hola
+      </Button>
       
     </Container>
   );

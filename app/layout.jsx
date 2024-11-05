@@ -2,7 +2,7 @@ import localFont from "next/font/local";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { theme } from "./styles/global-theme";
 import AppbarGlobal from "./components/appbar-global";
-
+import Footer from "./components/footer";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -29,6 +29,7 @@ export default function RootLayout({ children }) {
           <CssBaseline />
           <AppbarGlobal></AppbarGlobal>
           {children}
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: "standalone",
-    
-};
-
-export default nextConfig;
+    images: {
+      domains: ['randomuser.me'],
+    },
+  };
+  
+  export default nextConfig;
+  

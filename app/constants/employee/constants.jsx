@@ -8,7 +8,7 @@ export const initialRows = [
         salary: 45000,
         birthdate: "2024-11-05",
         status: "Active",
-        avatar: "https://randomuser.me/api/portraits/women/1.jpg"
+        avatar: "/1.jpg"
     },
     {
         id: 2,
@@ -18,7 +18,7 @@ export const initialRows = [
         salary: 32000,
         birthdate: "2024-11-05",
         status: "Active",
-        avatar: "https://randomuser.me/api/portraits/men/1.jpg"
+        avatar: "/m1.jpg"
 
     },
     {
@@ -29,7 +29,7 @@ export const initialRows = [
         salary: 38000,
         birthdate: "2024-11-05",
         status: "Active",
-        avatar: "https://randomuser.me/api/portraits/women/2.jpg"
+        avatar: "/2.jpg"
 
     },
     {
@@ -40,7 +40,7 @@ export const initialRows = [
         salary: 34000,
         birthdate: "2024-11-05",
         status: "Inactive",
-        avatar: "https://randomuser.me/api/portraits/men/2.jpg"
+        avatar: "/m2.jpg"
 
     },
     {
@@ -51,7 +51,7 @@ export const initialRows = [
         salary: 40000,
         birthdate: "2024-11-05",
         status: "Active",
-        avatar: "https://randomuser.me/api/portraits/women/3.jpg"
+        avatar: "3.jpg"
 
     }
   ];

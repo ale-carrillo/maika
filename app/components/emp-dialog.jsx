@@ -156,11 +156,13 @@ export default function EmpDialog({
         </Button>
         {/* Displaying the preview of the uploaded avatar */}
         {previewAvatar && (
-          <Image
+         <Image
             src={previewAvatar}
-            alt="Avatar Preview"
-            style={{ width: "80px", height: "80px", borderRadius: "50%", marginTop: "10px" }}
-          />
+            alt="Avatar preview"
+            width={100}
+            height={100}
+            sx={{ mt: 2 }}
+        />
         )}
       </DialogContent>
       <DialogActions>

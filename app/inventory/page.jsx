@@ -3,15 +3,16 @@
 // Imports.
 import { Typography, Box, Paper, IconButton, Button, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { initialRows } from "../constants/inventory/constants";
 import InventoryDialog from "../components/inventory-dialog";
 import Alerts from "../components/alerts";
+import axios from "axios";
+import { INVENTORIES_API } from "../constants/inventory/constants";
 
 // Inventory page.
 export default function Inventory() {
@@ -83,7 +84,7 @@ export default function Inventory() {
                     >
                         {/* Decrease existence. */}
                         <IconButton
-                            onClick={() => decreaseInventory(params.row.id)}
+                            onClick={() => decreaseInventory(params.row._id, params.row.existence)}
                             color="primary"
                         >
                             <RemoveIcon />
@@ -94,7 +95,7 @@ export default function Inventory() {
                         </Typography>
                         {/* Increase existence. */}
                         <IconButton
-                            onClick={() => increaseInventory(params.row.id)}
+                            onClick={() => increaseInventory(params.row._id, params.row.existence)}
                             color="primary"
                         >
                             <AddIcon />
@@ -119,7 +120,7 @@ export default function Inventory() {
                     </IconButton>
                     {/* Delete. */}
                     <IconButton
-                        onClick={() => deleteInventory(params.row.id)}
+                        onClick={() => deleteInventory(params.row._id)}
                         color="secondary"
                     >
                         <DeleteIcon />
@@ -132,76 +133,93 @@ export default function Inventory() {
     // States.
     const [action, setAction] = useState("");
     const [inventory, setInventory] = useState({
-        id: null,
+        _id: null,
         name: "",
         unit: "",
         existence: "",
         image: null
     });
     const [openDialog, setOpenDialog] = useState(false);
-    const [rows, setRows] = useState(initialRows);
+    const [rows, setRows] = useState();
     const [openAlert, setOpenAlert] = useState(false);
     const [alert, setAlert] = useState({
         message: "",
         severity: "",
     });
 
+    useEffect(() => {
+        fetchBooks();
+    }, []);
+
+    const fetchBooks = async () => {
+        try {
+            const response = await axios.get(INVENTORIES_API)
+            setRows(response.data)
+            console.log(response.data)
+        }
+        catch (error){
+            console.warn("Error fetching inventories:", error);
+            setAlert({
+                message: "Failed to load inventories",
+                severity: "error"
+            });
+            setOpenAlert(true);
+        }
+    };
+
     // Handle functions.
 
     // Decrease existence where id matches.
-    const decreaseInventory = (id) => {
-        // Validate index.
-        const index = rows.findIndex((item) => item.id === id);
-
-        if (index === -1) {
-            setAlert({
-                message: "Inventory not found.",
-                severity: "error",
+    const decreaseInventory = async (id, existence) => {
+        if (existence == 0) {
+            console.warn("Inventory existence cannot be less than zero.");
+            setAlert(
+            {
+              message: "Inventory existence cannot be less than zero.",
+              severity: "warning"
             });
             setOpenAlert(true);
-            console.warn("ID not found:", id);
             return;
         }
-
-        // Decrease existence or delete item if existence is zero.
-        if (rows[index].existence > 1) {
-            rows[index].existence--;
-            setRows(rows);
+        try {
+            const response = await axios.put(`${INVENTORIES_API}/existence/${id}`, {'existence': existence - 1} );
+            setRows(rows.map((e) => (e._id === id ? response.data : e)));
             setAlert({
                 message: "Inventory decreased successfully!",
                 severity: "success",
             });
-            setOpenAlert(true);
             console.info("Inventory decreased successfully!");
-        } else {
-            deleteInventory(id);
         }
+        catch (error) {
+            console.warn("Error decreasing inventory existence:", error);
+            setAlert({
+              message: "Failed to decrease inventory existence",
+              severity: "error"
+            });
+        }  
+        setOpenAlert(true);
     };
 
     // Increase existence where id matches.
-    const increaseInventory = (id) => {
-        // Validate index.
-        const index = rows.findIndex((item) => item.id === id);
-
-        if (index === -1) {
-            setAlert({
-                message: "Inventory not found.",
-                severity: "error",
-            });
-            setOpenAlert(true);
-            console.warn("ID not found:", id);
-            return;
-        }
-
+    const increaseInventory = async (id, existence) => {
         // Increase existence.
-        rows[index].existence++;
-        setRows(rows);
-        setAlert({
-            message: "Inventory increased successfully!",
-            severity: "success",
-        });
+        try {
+            const response = await axios.put(`${INVENTORIES_API}/existence/${id}`, {'existence': existence + 1} );
+            setRows(rows.map((e) => (e._id === id ? response.data : e))); 
+            setAlert({
+                message: "Inventory increased successfully!",
+                severity: "success",
+            });
+            console.info("Inventory increased successfully!");
+        }
+        catch (error) {
+            console.error("Error increasing inventory existence:", error);
+            setAlert({
+              message: "Failed to increase inventory existence",
+              severity: "error"
+            });
+        }  
         setOpenAlert(true);
-        console.info("Inventory increased successfully!");
     };
 
     // Edit or add inventory.
@@ -215,7 +233,7 @@ export default function Inventory() {
         // Select action.
         if (action == "add") {
             setInventory({
-                id: null,
+                _id: null,
                 name: "",
                 unit: "",
                 existence: 0,
@@ -229,15 +247,26 @@ export default function Inventory() {
     };
 
     // Delete inventory where id matches.
-    const deleteInventory = (id) => {
+    const deleteInventory = async (id) => {
         // Delete inventory.
-        setRows(rows.filter((row) => row.id !== id));
-        setAlert({
-            message: "Inventory deleted successfully!",
-            severity: "success",
-        });
-        setOpenAlert(true);
-        console.info("Inventory deleted successfully!");
+        try {
+            await axios.delete(`${INVENTORIES_API}/${id}`);
+            setRows(rows.filter((row) => row._id !== id));
+            setAlert({
+                message: "Inventory deleted successfully!",
+                severity: "success",
+            });
+            setOpenAlert(true);
+            console.info("Inventory deleted successfully!");
+        }
+        catch (error) {
+            console.error("Error deleting inventory:", error);
+            setAlert({
+              message: "Failed to delete inventory",
+              severity: "error"
+            });
+            setOpenAlert(true);
+        }
     };
 
     // Component.
@@ -275,6 +304,7 @@ export default function Inventory() {
                 <DataGrid
                     columns={columns}
                     rows={rows}
+                    getRowId={(row) => row._id}
                     rowHeight={180}
                     initialState={{
                         pagination: {

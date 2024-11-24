@@ -73,6 +73,7 @@ export default function InventoryDialog({
 
     // Select if add or edit the inventory.
     if (action === "add") {
+      // API request
       try {
         const response = await axios.post(INVENTORIES_API, updatedInventory)
         setRows([...rows, response.data]);
@@ -90,6 +91,7 @@ export default function InventoryDialog({
       }
       setOpenAlert(true);
     } else if (action === "edit") {
+      // API request
       try {
         const response = await axios.put(`${INVENTORIES_API}/${inventory._id}`, updatedInventory)
         setRows(rows.map((e) => (e._id === updatedInventory._id ? updatedInventory : e)));

@@ -150,11 +150,14 @@ export default function Inventory() {
         severity: "",
     });
 
+    // When loading the page
     useEffect(() => {
-        fetchBooks();
+        fetchInventories();
     }, []);
 
-    const fetchBooks = async () => {
+    // Fetching all the inventories
+    const fetchInventories = async () => {
+        // API request
         try {
             const response = await axios.get(INVENTORIES_API)
             setRows(response.data)
@@ -185,6 +188,7 @@ export default function Inventory() {
             return;
         }
         setDisableIncreaseDecreaseExistence(true);
+        // API request
         try {
             const response = await axios.put(`${INVENTORIES_API}/existence/${id}`, {'existence': existence - 1} );
             setRows(rows.map((e) => (e._id === id ? response.data : e)));
@@ -209,6 +213,7 @@ export default function Inventory() {
     const increaseInventory = async (id, existence) => {
         // Increase existence.
         setDisableIncreaseDecreaseExistence(true);
+        // API request
         try {
             const response = await axios.put(`${INVENTORIES_API}/existence/${id}`, {'existence': existence + 1} );
             setRows(rows.map((e) => (e._id === id ? response.data : e))); 
@@ -256,6 +261,7 @@ export default function Inventory() {
     // Delete inventory where id matches.
     const deleteInventory = async (id) => {
         // Delete inventory.
+        // API request
         try {
             await axios.delete(`${INVENTORIES_API}/${id}`);
             setRows(rows.filter((row) => row._id !== id));

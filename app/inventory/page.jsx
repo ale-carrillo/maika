@@ -84,6 +84,7 @@ export default function Inventory() {
                     >
                         {/* Decrease existence. */}
                         <IconButton
+                            disabled={disableIncreaseDecreaseExistence}
                             onClick={() => decreaseInventory(params.row._id, params.row.existence)}
                             color="primary"
                         >
@@ -95,6 +96,7 @@ export default function Inventory() {
                         </Typography>
                         {/* Increase existence. */}
                         <IconButton
+                            disabled={disableIncreaseDecreaseExistence}
                             onClick={() => increaseInventory(params.row._id, params.row.existence)}
                             color="primary"
                         >
@@ -139,6 +141,7 @@ export default function Inventory() {
         existence: "",
         image: null
     });
+    const [disableIncreaseDecreaseExistence, setDisableIncreaseDecreaseExistence] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
     const [rows, setRows] = useState();
     const [openAlert, setOpenAlert] = useState(false);
@@ -181,6 +184,7 @@ export default function Inventory() {
             setOpenAlert(true);
             return;
         }
+        setDisableIncreaseDecreaseExistence(true);
         try {
             const response = await axios.put(`${INVENTORIES_API}/existence/${id}`, {'existence': existence - 1} );
             setRows(rows.map((e) => (e._id === id ? response.data : e)));
@@ -196,13 +200,15 @@ export default function Inventory() {
               message: "Failed to decrease inventory existence",
               severity: "error"
             });
-        }  
+        } 
+        setDisableIncreaseDecreaseExistence(false);
         setOpenAlert(true);
     };
 
     // Increase existence where id matches.
     const increaseInventory = async (id, existence) => {
         // Increase existence.
+        setDisableIncreaseDecreaseExistence(true);
         try {
             const response = await axios.put(`${INVENTORIES_API}/existence/${id}`, {'existence': existence + 1} );
             setRows(rows.map((e) => (e._id === id ? response.data : e))); 
@@ -219,6 +225,7 @@ export default function Inventory() {
               severity: "error"
             });
         }  
+        setDisableIncreaseDecreaseExistence(false);
         setOpenAlert(true);
     };
 

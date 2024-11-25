@@ -1,8 +1,7 @@
 "use client";
 import * as React from 'react';
 import { DataGrid } from "@mui/x-data-grid";
-import { useState } from "react";
-import { initialRows } from "../constants/menu/constants";
+import { useState, useEffect } from "react";
 import Alerts from "../components/alerts";
 import { Container, Typography, Paper , Box, useTheme, Button } from "@mui/material";
 import Grid from "@mui/material/Grid2";
@@ -10,6 +9,8 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import Image from "next/image";
 import AddIcon from "@mui/icons-material/Add";
 import MenuDialog from '../components/menu-dialog';
+import { MENU_API } from "../constants/menu/constants";
+import axios from "axios";
 
 
 export default function Menu(){
@@ -58,16 +59,16 @@ export default function Menu(){
               )
           },
       },
-      // Name.
+      // Name of the meal.
       { field: "meal", headerName: "Meal", flex: 1 },
-      // Unit.
+      // Description of the meal.
       { field: "description", headerName: "Description", flex: 1 },
       {
         field: "price",
         headerName: "Price",
         flex: 1,
         renderCell: (params) => {
-            // Existence inventory element render.
+            // Existence menu element render.
             return (
                 <Box
                     sx={{
@@ -90,7 +91,7 @@ export default function Menu(){
       
 const [action, setAction] = useState("");
 const [menu, setMenu] = useState({
-  id: null,
+  _id: null,
   meal: "",
   description: "",
   price: 0,
@@ -98,13 +99,35 @@ const [menu, setMenu] = useState({
 });
 
 const [openDialog, setOpenDialog] = useState(false);
-const [rows, setRows] = useState(initialRows);
+const [rows, setRows] = useState();
 const [openAlert, setOpenAlert] = useState(false);
 const [alert, setAlert] = useState({
     message: "",
     severity: "",
 });
 
+    // When loading the page
+    useEffect(() => {
+      fetchMeals();
+  }, []);
+
+  // Fetching all the meals
+  const fetchMeals = async () => {
+      // API request
+      try {
+          const response = await axios.get(MENU_API)
+          setRows(response.data)
+          console.log(response.data)
+      }
+      catch (error){
+          console.warn("Error fetching meals:", error);
+          setAlert({
+              message: "Failed to load meals",
+              severity: "error"
+          });
+          setOpenAlert(true);
+      }
+  };
 
 const handleMenu = ({ action, menu }) => {
   // Update action.
@@ -116,7 +139,7 @@ const handleMenu = ({ action, menu }) => {
   // Select action.
   if (action == "add") {
       setMenu({
-          id: null,
+          _id: null,
           meal: "",
           description: "",
           price: 0,
@@ -203,6 +226,7 @@ const handleMenu = ({ action, menu }) => {
                               <DataGrid
                                   columns={columns}
                                   rows={rows}
+                                  getRowId={(row) => row._id}
                                   rowHeight={180}
                                   initialState={{
                                       pagination: {

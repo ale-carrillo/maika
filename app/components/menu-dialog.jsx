@@ -11,6 +11,8 @@ import {
   } from "@mui/material";
   import Image from "next/image";
   import { useState, useEffect } from "react";
+  import { MENU_API } from "../constants/menu/constants";
+  import axios from "axios";
   
   // Menu dialog.
   export default function MenuDialog({
@@ -26,7 +28,6 @@ import {
   }) {
     // States.
     const [selectedImage, setSelectedImage] = useState(null);
-    const [imagePreview, setImagePreview] = useState("");
     const [errors, setErrors] = useState({});
   
   
@@ -50,7 +51,7 @@ import {
     };
   
     // Save inventory.
-    const saveMenu = () => {
+    const saveMenu = async () => {
       // Validate fields.
       if (!validateFields()) {
         setAlert({
@@ -66,20 +67,29 @@ import {
       const updatedMenu = {
         ...menu,
         price: +menu.price,
-        image: selectedImage ? URL.createObjectURL(selectedImage) : menu.image,
+        image: selectedImage ? selectedImage : menu.image,
       };
   
       // Select if add or edit the menu.
       if (action === "add") {
-        updatedMenu.id = Math.max(...rows.map((i) => i.id), 1) + 1;
-        setRows([...rows, updatedMenu]);
-        setAlert({
-          message: "Meal added successfully!",
-          severity: "success",
-        });
+        // API request
+        try {
+          const response = await axios.post(MENU_API, updatedMenu)
+          setRows([...rows, response.data]);
+          setAlert({
+            message: "Meal added successfully!",
+            severity: "success",
+          });
+          console.info("Meal added successfully!");
+        }
+        catch {
+          setAlert({
+            message: "Failed to add Meal.",
+            severity: "error",
+          });
+        }
         setOpenAlert(true);
-        console.info("Meal added successfully!");
-      } 
+      }
   
       handleCloseDialog();
     };
@@ -92,26 +102,32 @@ import {
       });
     };
   
-    // Handle image change.
-    const handleImageChange = (event) => {
-      // If a image was selected.
-      const file = event.target.files[0];
-      if (file) {
-        // Validate file type.
-        if (file.type.startsWith("image/")) {
-          setSelectedImage(file);
-          const imageUrl = URL.createObjectURL(file);
-          setImagePreview(imageUrl);
-        } else {
-          setAlert({
-            message: "Please upload a valid image file.",
-            severity: "error",
-          });
-          setOpenAlert(true);
-          console.warn("Please upload a valid image file.");
-        }
+  // Handle image change.
+  const handleImageChange = (event) => {
+    // If a image was selected.
+    const file = event.target.files[0];
+    if (file) {
+      // Validate file type.
+      if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+          const base64Image = reader.result;
+          setSelectedImage(base64Image);
+        };
+
+        // Read the file as a data URL (Base64 string)
+        reader.readAsDataURL(file);
+      } else {
+        setAlert({
+          message: "Please upload a valid image file.",
+          severity: "error",
+        });
+        setOpenAlert(true);
+        console.warn("Please upload a valid image file.");
       }
-    };
+    }
+  };
   
   
     // Component.
@@ -164,29 +180,29 @@ import {
             helperText={errors.image}
             sx={{ mb: 2 }}
           />
-          {/* Image preview. */}
-          {imagePreview && (
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="body1">Image Preview:</Typography>
-              <Image
-                src={imagePreview}
-                alt="Selected Image"
-                width={200}
-                height={200}
-                style={{ objectFit: "cover" }}
-              />
-            </Box>
-          )}
-        </DialogContent>
-        {/* Action buttons. */}
-        <DialogActions>
-          <Button color="secondary" onClick={handleCloseDialog}>
-            Cancel
-          </Button>
-          <Button color="primary" onClick={saveMenu}>
-            {action === "add" ? "Add" : "Save"}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  }
+        {/* Image preview. */}
+        {selectedImage && (
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="body1">Image Preview:</Typography>
+            <Image
+              src={selectedImage}
+              alt="Selected Image"
+              width={200}
+              height={200}
+              style={{ objectFit: "cover" }}
+            />
+          </Box>
+        )}
+      </DialogContent>
+      {/* Action buttons. */}
+      <DialogActions>
+        <Button color="secondary" onClick={handleCloseDialog}>
+          Cancel
+        </Button>
+        <Button color="primary" onClick={saveMenu}>
+          {action === "add" ? "Add" : "Save"}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}

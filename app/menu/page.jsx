@@ -1,28 +1,164 @@
 "use client";
 import * as React from 'react';
-import { Container, Typography, Box, useTheme, Button } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import { useState, useEffect } from "react";
+import Alerts from "../components/alerts";
+import { Container, Typography, Paper , Box, useTheme, Button } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import Image from "next/image";
+import AddIcon from "@mui/icons-material/Add";
+import MenuDialog from '../components/menu-dialog';
+import { MENU_API } from "../constants/menu/constants";
+import axios from "axios";
 
-//Here, we define the names of the buttons that we will use to switch between the diferent meals
+
 export default function Menu(){
+
     const theme = useTheme();
-    const nombresBotones = [
-      'STARTER',
-      'SOUP',
-      'SALADS',
-      'SPECIALTY',
-      'STEAKS',
-      'DESSERTS',
-      'DRINKS',
-      'COCTAILS'
-    ];
+
+    const columns = [
+      // Image.
+      {
+          field: "image",
+          headerName: "Image",
+          width: 300,
+          renderCell: (params) => {
+              // Inventory element image render.
+              return (
+                  <Box
+                      sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: "100%",
+                          height: "100%",
+                      }}
+                  >
+                      <Box
+                          sx={{
+                              width: 250,
+                              height: 150,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              overflow: "hidden",
+                              borderRadius: 2,
+                          }}
+                      >
+                          <Image
+                              src={params.row.image}
+                              alt={params.row.meal}
+                              layout="responsive"
+                              width={100}
+                              height={100}
+                              style={{ objectFit: "fill" }}
+                          />
+                      </Box>
+                  </Box>
+              )
+          },
+      },
+      // Name of the meal.
+      { field: "meal", headerName: "Meal", flex: 1 },
+      // Description of the meal.
+      { field: "description", headerName: "Description", flex: 1 },
+      {
+        field: "price",
+        headerName: "Price",
+        flex: 1,
+        renderCell: (params) => {
+            // Existence menu element render.
+            return (
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 4,
+                        height: "100%",
+                    }}
+                >
+                    {/* Current existence. */}
+                    <Typography>
+                        {params.row.price} $
+                    </Typography>
+                </Box>
+            )
+        },
+    },
+  ];
       
+const [action, setAction] = useState("");
+const [menu, setMenu] = useState({
+  _id: null,
+  meal: "",
+  description: "",
+  price: 0,
+  image: null
+});
+
+const [openDialog, setOpenDialog] = useState(false);
+const [rows, setRows] = useState();
+const [openAlert, setOpenAlert] = useState(false);
+const [alert, setAlert] = useState({
+    message: "",
+    severity: "",
+});
+
+    // When loading the page
+    useEffect(() => {
+      fetchMeals();
+  }, []);
+
+  // Fetching all the meals
+  const fetchMeals = async () => {
+      // API request
+      try {
+          const response = await axios.get(MENU_API)
+          setRows(response.data)
+          console.log(response.data)
+      }
+      catch (error){
+          console.warn("Error fetching meals:", error);
+          setAlert({
+              message: "Failed to load meals",
+              severity: "error"
+          });
+          setOpenAlert(true);
+      }
+  };
+
+const handleMenu = ({ action, menu }) => {
+  // Update action.
+  setAction(action);
+
+  // Open dialog.
+  setOpenDialog(true);
+
+  // Select action.
+  if (action == "add") {
+      setMenu({
+          _id: null,
+          meal: "",
+          description: "",
+          price: 0,
+          image: null
+      });
+  } 
+  else {
+      console.warn("Unknown action:", action);
+  }
+};
+
+
     return(
-        <Container maxWidth="xl"
-        sx={{ backgroundColor: (theme) => theme.palette.background.default }}
-        >
+
+      <Box
+      maxWidth="xl"
+      sx={{ mx: "10%" }}
+  >
+
           {/*In this grid we use a background image with rounded borders the make a better presentation*/}
               <Grid
                 sx={{
@@ -60,281 +196,80 @@ export default function Menu(){
                   </Typography>
               </Box>
               
-              <Grid xs={6} sx={{ border: "solid white 5px",display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              </Grid>
-            {/*Here we create our buttons to switch between different menus using map and the first dictionary that we can see in the code.*/}
-              <Grid container spacing={2} justifyContent="center" sx={{ p: 2}}>
-                {nombresBotones.map((nombre, index) => (
-                  <Grid xs={3} key={index}>
-                    <Button variant="contained" fullWidth>
-                      {nombre}
-                    </Button>
-                  </Grid>
-                ))}
+            {/* Add meal button. */}
+            <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+                <Button
+                    startIcon={<AddIcon />}
+                    variant="contained"
+                    sx={{ borderRadius: 3 }}
+                    onClick={() => handleMenu({ action: "add" })}
+                >
+                    Add Meal
+                </Button>
+            </Box>
+
+              <Grid xs={6} sx={{ border: "solid black 5px",display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               </Grid>
 
-              
-              <Grid xs={6} sx={{ border: "solid white 5px",display: 'flex', justifyContent: 'center', alignItems: 'center', mb:3 }}>
-              </Grid>
-              
             {/*Here we have the container with the menu items, where we have divided it into columns to provide a better view.*/}
-            <Grid container spacing={10} sx={{ justifyContent: 'center'}}>
-              {/*Here we have the first container, where we have some hardcoded food.*/}
-              <Grid size={{ xs: 5}} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Grid xs={6} sx={{justifyContent: 'center', alignItems: 'center' }}>
-
-
-                              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                                  <Typography
-                                  variant="h5"
-                                  color="black"
-                                  sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
-                                  Spaghetti - $10
-                                  </Typography>
-                                  <Image 
-                                    src="/spagetti.jpg" //here we use our food image 
-                                    alt="Spaghetti"
-                                    width={300} height={300}
-                                    style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
-                                  />
-                                </Box>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', mt:3, mb:5 }}>
-                                  <Typography
-                                      variant="h6"
-                                      color="black"
-                                  >
-                                  Pasta served with a choice of rich sauces, such as marinara or Alfredo. 
-                                  </Typography>
-                                </Box>
-
-
-                              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                                  <Typography
-                                  variant="h5"
-                                  color="black"
-                                  sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
-                                  Lasagna - $10
-                                  </Typography>
-                                  <Image 
-                                    src="/lasagna.png" //here we use our image 
-                                    alt="Lasagna"
-                                    width={300} height={300}
-                                    style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
-                                  />
-                                </Box>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', mt:3, mb:5 }}>
-                                  <Typography
-                                      variant="h6"
-                                      color="black"
-                                  >
-                                  Layers of pasta, rich meat sauce, béchamel, and melted cheese baked to perfection, offering a hearty and comforting dish.
-                                  </Typography>
-                                </Box>
-
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                                  <Typography
-                                  variant="h5"
-                                  color="black"
-                                  sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
-                                  Risotto - $10
-                                  </Typography>
-                                  <Image 
-                                    src="/risotto.jpg" //here we use our image 
-                                    alt="Risotto"
-                                    width={300} height={300}
-                                    style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
-                                  />
-                                </Box>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', mt:3, mb:5 }}>
-                                  <Typography
-                                      variant="h6"
-                                      color="black"
-                                  >
-                                    Creamy Arborio rice cooked slowly with broth, finished with Parmesan cheese and seasonal vegetables or seafood for a luxurious texture.
-                                  </Typography>
-                                </Box>
-
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                                  <Typography
-                                  variant="h5"
-                                  color="black"
-                                  sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
-                                  Fettuccine Alfredo - $10
-                                  </Typography>
-                                  <Image 
-                                    src="/fetuccini.jpg" //here we use our image 
-                                    alt="Fettuccine Alfredo"
-                                    width={300} height={300}
-                                    style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
-                                  />
-                                </Box>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', mt:3, mb:5 }}>
-                                  <Typography
-                                      variant="h6"
-                                      color="black"
-                                  >
-                                    Flat pasta tossed in a velvety sauce made from butter, cream, and Parmesan cheese, creating a rich and indulgent experience.
-                                  </Typography>
-                                </Box>
-
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                                  <Typography
-                                  variant="h5"
-                                  color="black"
-                                  sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
-                                  Penne Arrabbiata - $10
-                                  </Typography>
-                                  <Image 
-                                    src="/Penne.jpg" //here we use our image 
-                                    alt="Penne Arrabbiata"
-                                    width={300} height={300}
-                                    style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
-                                  />
-                                </Box>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', mt:3, mb:5 }}>
-                                  <Typography
-                                      variant="h6"
-                                      color="black"
-                                  >
-                                    Penne pasta served in a spicy tomato sauce with garlic and red chili flakes, garnished with fresh parsley for a bold flavor.
-                                  </Typography>
-                                </Box>
-
-
-
-
-                    </Grid>
-              </Grid>
-
-              <Grid xs={1} sx={{border: "solid white 5px", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              </Grid>
-              {/*Here we have the second container, where we have some hardcoded food.*/}
-              <Grid size={{ xs: 5}} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <Grid xs={6} sx={{justifyContent: 'center', alignItems: 'center' }}>
-
-
-                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                                  <Typography
-                                  variant="h5"
-                                  color="black"
-                                  sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
-                                  Caprese Salad - $10
-                                  </Typography>
-                                  <Image 
-                                    src="/caprese.jpg" //here we use our image 
-                                    alt="Caprese Salad"
-                                    width={300} height={300}
-                                    style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
-                                  />
-                                </Box>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', mt:3, mb:5 }}>
-                                  <Typography
-                                      variant="h6"
-                                      color="black"
-                                  >
-                                  Fresh mozzarella, ripe tomatoes, and basil drizzled with balsamic glaze and olive oil, highlighting the simplicity of Italian flavors.
-                                  </Typography>
-                                </Box>
-
-
-                              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                                  <Typography
-                                  variant="h5"
-                                  color="black"
-                                  sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
-                                  Osso Buco - $10
-                                  </Typography>
-                                  <Image 
-                                    src="/osso.jpg" //here we use our image 
-                                    alt="Osso Buco"
-                                    width={300} height={300}
-                                    style={{ marginTop: '16px', maxWidth: '45%', height: 'auto', borderRadius: "15px" }} 
-                                  />
-                                </Box>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', mt:3, mb:5 }}>
-                                  <Typography
-                                      variant="h6"
-                                      color="black"
-                                  >
-                                    Tender braised veal shanks served with gremolata and a side of risotto or polenta, providing a rich, flavorful main course.
-                                  </Typography>
-                                </Box>
-
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                                  <Typography
-                                  variant="h5"
-                                  color="black"
-                                  sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
-                                  Tiramisu - $10
-                                  </Typography>
-                                  <Image 
-                                    src="/tiramisu.jpg" //here we use our image 
-                                    alt="Tiramisu"
-                                    width={300} height={300}
-                                    style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
-                                  />
-                                </Box>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', mt:3, mb:5 }}>
-                                  <Typography
-                                      variant="h6"
-                                      color="black"
-                                  >
-                                    Layers of coffee-soaked ladyfingers and mascarpone cheese dusted with cocoa powder, creating a decadent and creamy dessert.
-                                  </Typography>
-                                </Box>
-
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                                  <Typography
-                                  variant="h5"
-                                  color="black"
-                                  sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
-                                  Bruschetta - $10
-                                  </Typography>
-                                  <Image 
-                                    src="/bruschetta.jpg" //here we use our image 
-                                    alt="Bruschetta"
-                                    width={300} height={300}
-                                    style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
-                                  />
-                                </Box>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', mt:3, mb:5 }}>
-                                  <Typography
-                                      variant="h6"
-                                      color="black"
-                                  >
-                                    Toasted bread topped with a mixture of diced tomatoes, garlic, basil, and olive oil, offering a refreshing starter with vibrant flavors.
-                                  </Typography>
-                                </Box>
-
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                                  <Typography
-                                  variant="h5"
-                                  color="black"
-                                  sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
-                                  Arancini - $10
-                                  </Typography>
-                                  <Image 
-                                    src="/arancini.jpg" //here we use our image 
-                                    alt="Arancini"
-                                    width={300} height={300}
-                                    style={{ marginTop: '16px', maxWidth: '50%', height: 'auto', borderRadius: "15px" }} 
-                                  />
-                                </Box>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', mt:3, mb:5 }}>
-                                  <Typography
-                                      variant="h6"
-                                      color="black"
-                                  >
-                                    Crispy rice balls filled with cheese and meat or vegetables, served with marinara sauce for dipping, perfect as a savory appetizer.
-                                  </Typography>
-                                </Box>
-
-
-
-                          </Grid>
-              </Grid>
-            </Grid>
             
-        </Container>
+            <Paper
+                              sx={{
+                                  padding: 2,
+                                  borderRadius: 2,
+                                  maxWidth: "80%",
+                                  margin: "0 auto",
+                                  height: "600px",
+                              }}
+                          >
+                              {/* Meals table. */}
+                              <DataGrid
+                                  columns={columns}
+                                  rows={rows}
+                                  getRowId={(row) => row._id}
+                                  rowHeight={180}
+                                  initialState={{
+                                      pagination: {
+                                          paginationModel: { page: 0, pageSize: 5 },
+                                      },
+                                  }}
+                                  pageSizeOptions={[5, 10]}
+                                  sx={{
+                                      border: "1px solid #DDD",
+                                      backgroundColor: "#F9F9F9",
+                                      "& .MuiDataGrid-columnHeaderTitle": {
+                                          fontWeight: "bold",
+                                      },
+                                      "& .MuiDataGrid-columnHeaders": {
+                                          borderBottom: "2px solid #DDD",
+                                      },
+                                      "& .MuiDataGrid-row:hover": {
+                                          backgroundColor: "#F5F5F5",
+                                      },
+                                      "& .MuiDataGrid-cell": {
+                                          borderRight: "1px solid #DDD",
+                                      },
+                                      "& .MuiDataGrid-footerContainer": {
+                                          backgroundColor: "#F1F1F1",
+                                      },
+                                  }}
+                              />
+                          </Paper>
+        
+         {/* Creation dialog. */}
+         <MenuDialog
+                open={openDialog}
+                setOpen={setOpenDialog}
+                menu={menu}
+                setMenu={setMenu}
+                action={action}
+                rows={rows}
+                setRows={setRows}
+                setAlert={setAlert}
+                setOpenAlert={setOpenAlert}
+            />
+            {/* Alert. */}
+            <Alerts open={openAlert} setOpen={setOpenAlert} alert={alert} />
+    </Box>
     );
 };

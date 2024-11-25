@@ -45,7 +45,6 @@ export default function EmployeeTable() {
     severity: "",
   });
 
-  // **Fetch employees from backend on mount**
   useEffect(() => {
     fetchEmployees();
   }, []);
@@ -53,7 +52,7 @@ export default function EmployeeTable() {
   const fetchEmployees = async () => {
     try {
       const response = await axios.get("http://127.0.0.1:5000/api/v1/staff");
-      const mappedRows = response.data.map((row) => ({ ...row, id: row._id })); // Asegura que todas las filas tengan id
+      const mappedRows = response.data.map((row) => ({ ...row, id: row._id })); 
       setRows(mappedRows);
     } catch (error) {
       setAlert({
@@ -128,6 +127,11 @@ export default function EmployeeTable() {
     }
     setOpenAlert(true);
   };
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(amount);
+  };
+  
+
 
   const handleTabChange = (event, newIndex) => {
     setTabIndex(newIndex);
@@ -150,7 +154,19 @@ export default function EmployeeTable() {
     },
     { field: "title", headerName: "Title", flex: 2 },
     { field: "email", headerName: "Email", flex: 1 },
-    { field: "salary", headerName: "Salary", flex: 1 },
+    {
+      field: "salary",
+      headerName: "Salary",
+      flex: 1,
+      renderCell: (params) => (
+        <Typography>
+          {formatCurrency(params.value)}
+        </Typography>
+      ),
+    },
+
+
+    
     { field: "birthday", headerName: "Birthday", flex: 1 },
     
    
@@ -209,11 +225,15 @@ export default function EmployeeTable() {
           <DataGrid
             rows={rows}
             columns={columns}
-            getRowId={(row) => row._id} // Define _id como identificador único
+            getRowId={(row) => row._id} 
             pageSizeOptions={[5, 10]}
             disableColumnMenu
             autoHeight
             sx={{
+              "& .MuiDataGrid-cell": {
+                display: "flex",
+                alignItems: "center",
+              },
               "& .MuiDataGrid-columnHeaders": { backgroundColor: "#333", color: "#000", fontWeight: "bold" },
               "& .MuiDataGrid-row:hover": { backgroundColor: "#f5f5f5" },
             }}
@@ -230,8 +250,10 @@ export default function EmployeeTable() {
                 <Typography variant="h6">{emp.name}</Typography>
                 <Typography variant="body2" color="textSecondary">Title: {emp.title}</Typography>
                 <Typography variant="body2" color="textSecondary">Email: {emp.email}</Typography>
-                <Typography variant="body2" color="textSecondary">Salary: {emp.salary}</Typography>
-                <Typography variant="body2" color="textSecondary" sx={{mb:2}}>Birthday: {emp.birthday}</Typography>
+                <Typography variant="body2" color="textSecondary">
+                              Salary: {formatCurrency(emp.salary)}
+                </Typography>
+                  <Typography variant="body2" color="textSecondary" sx={{mb:2}}>Birthday: {emp.birthday}</Typography>
                 <Chip
                   label={emp.status ? "Active" : "Inactive"}
                   color={emp.status ? "success" : "error"}

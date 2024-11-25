@@ -26,8 +26,7 @@ export default function EmpDialog({
   setOpenAlert,
 }) {
   const [previewAvatar, setPreviewAvatar] = useState(emp.avatar || "");
-  const [errors, setErrors] = useState({}); // Estado para rastrear errores por campo
-
+  const [errors, setErrors] = useState({});
   useEffect(() => {
     setPreviewAvatar(emp.avatar || "");
   }, [emp, open]);
@@ -35,11 +34,10 @@ export default function EmpDialog({
   const handleCloseDialog = () => {
     setOpen(false);
     setPreviewAvatar(emp.avatar || "");
-    setErrors({}); // Limpiar errores al cerrar el diálogo
+    setErrors({});
   };
 
   const saveEmp = async () => {
-    // Validar antes de enviar
     if (!validateForm()) return;
 
     try {
@@ -92,20 +90,48 @@ export default function EmpDialog({
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-
+  
     setemp({
       ...emp,
       [name]: name === "salary" ? Number(value) : name === "status" ? value === "Active" : value,
     });
-
-    // Limpiar el error al escribir
-    setErrors({ ...errors, [name]: "" });
+  
+    const newErrors = { ...errors };
+  
+    if (name === "name" && value.trim() === "") {
+      newErrors.name = "Name is required.";
+    } else {
+      delete newErrors.name;
+    }
+  
+    if (name === "email" && (!/\S+@\S+\.\S+/.test(value) || value.trim() === "")) {
+      newErrors.email = "Enter a valid email address.";
+    } else {
+      delete newErrors.email;
+    }
+  
+    if (name === "salary") {
+      const isValidSalary = /^[0-9]+(\.[0-9]{1,2})?$/.test(value);
+      if (!isValidSalary || value.trim() === "") {
+        newErrors.salary = "Salary must be a valid number with up to 2 decimals.";
+      } else {
+        delete newErrors.salary;
+      }
+    }
+  
+    if (name === "birthday" && value.trim() === "") {
+      newErrors.birthday = "Birthday is required.";
+    } else {
+      delete newErrors.birthday;
+    }
+  
+    setErrors(newErrors);
   };
+  
 
   const validateForm = () => {
     const newErrors = {};
 
-    // Validaciones de campos
     if (!emp.name) newErrors.name = "Name is required.";
     if (!emp.email || !/\S+@\S+\.\S+/.test(emp.email)) newErrors.email = "Enter a valid email address.";
     if (!emp.salary || isNaN(emp.salary)) newErrors.salary = "Salary must be a valid number.";
@@ -113,7 +139,6 @@ export default function EmpDialog({
 
     setErrors(newErrors);
 
-    // Devolver false si hay errores
     return Object.keys(newErrors).length === 0;
   };
 
@@ -186,16 +211,16 @@ export default function EmpDialog({
           helperText={errors.salary}
         />
         <TextField
-          margin="dense"
-          name="birthday"
-          label="Birthday"
-          type="date"
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          value={emp.birthday || ""}
-          onChange={handleChange}
-          error={!!errors.birthday}
-          helperText={errors.birthday}
+           margin="dense"
+           name="birthday"
+           label="Birthday"
+           type="date"
+           fullWidth
+           InputLabelProps={{ shrink: true }}
+           value={emp.birthday || ""}
+           onChange={handleChange}
+           error={!!errors.birthday}
+           helperText={errors.birthday}
         />
         <RadioGroup
           name="status"
@@ -208,20 +233,20 @@ export default function EmpDialog({
         </RadioGroup>
 
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, mt: 2 }}>
-  <Button variant="outlined" component="label">
-    Upload Avatar
-    <input type="file" hidden accept="image/*" onChange={handleFileChange} />
-  </Button>
-  {previewAvatar && (
-    <Image
-      src={previewAvatar}
-      alt="Avatar preview"
-      width={100}
-      height={100}
-      style={{ borderRadius: "8px" }}
-    />
-  )}
-</Box>
+          <Button variant="outlined" component="label">
+            Upload Avatar
+            <input type="file" hidden accept="image/*" onChange={handleFileChange} />
+          </Button>
+          {previewAvatar && (
+            <Image
+              src={previewAvatar}
+              alt="Avatar preview"
+              width={100}
+              height={100}
+              style={{ borderRadius: "8px" }}
+            />
+          )}
+        </Box>
 
       </DialogContent>
       <DialogActions>

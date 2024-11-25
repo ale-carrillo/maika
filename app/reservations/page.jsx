@@ -4,7 +4,7 @@ import * as React from 'react';
 import dayjs from 'dayjs';
 import { IconButton, Paper, Box, Container, useTheme, Typography, Button, InputBase, TextField } from '@mui/material';
 
-import { useState } from "react";
+import { useState, useEffect  } from "react";
 
 import { DataGrid } from "@mui/x-data-grid";
 import Alerts from "../components/alerts";
@@ -16,14 +16,16 @@ import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 
+import axios from "axios";
+import { RESERVATIONS_API } from "../constants/home/constantsReservation";
+
 
 export default function Reservations() {
 
-  const [rows, setRows] = useState(initialRows);
+  const [rows, setRows] = useState();
 
   {/*Definition of table columns*/}
   const columns = [
-    { field: "id", headerName: "ID", width: 30 },
     { field: "date", headerName: "Date", flex: 2 },
     { field: "people", headerName: "Number of people", flex: 1 },
     { field: "t_reservation", headerName: "Reservation", flex: 1 },
@@ -47,7 +49,7 @@ export default function Reservations() {
           </IconButton>
           <IconButton
             color="secondary"
-            onClick={() => deleteReservation(params.row.id)}
+            onClick={() => deleteReservation(params.row._id)}
           >
             <DeleteIcon />
           </IconButton>
@@ -60,7 +62,7 @@ export default function Reservations() {
 
   {/*Status to handle reservation details*/}
   const [reservation, setReservation] = useState({
-    id: null,
+    _id: null,
     date: dayjs().format("DD MMM YYYY HH:mm"),
     people: "",
     t_reservation: "",
@@ -82,7 +84,7 @@ export default function Reservations() {
     if (action == "add") {
       console.log("Preparing to add a new Reservation");
       setReservation({
-        id: null,
+        _id: null,
         date: dayjs().format("DD MMM YYYY HH:mm"),
         people: "",
         t_reservation: "",
@@ -102,13 +104,26 @@ export default function Reservations() {
   };
 
   {/*Function to delete a reservation*/}
-  const deleteReservation = (id) => {
-    setRows(rows.filter((row) => row.id !== id));
-    setAlert({
-      message: "Reservation deleted successful.",
-      saverity: "success",
-    });
-    setOpenAlert(true);
+  const deleteReservation = async(id) => {
+
+    try {
+      await axios.delete(`${RESERVATIONS_API}/${id}`);
+      setRows(rows.filter((row) => row._id !== id));
+      setAlert({
+          message: "Reservation deleted successfully!",
+          severity: "success",
+      });
+      setOpenAlert(true);
+      console.info("Reservation deleted successfully!");
+    }
+    catch (error) {
+        console.error("Error deleting reservation:", error);
+        setAlert({
+          message: "Failed to delete reservation",
+          severity: "error"
+        });
+        setOpenAlert(true);
+    }
   };
 
   {/*Theme */}
@@ -127,6 +142,25 @@ const [alert, setAlert] = useState({
   message: "",
   severity: "",
 });
+
+useEffect(() => {
+  fetchReservation();
+}, []);
+const fetchReservation = async () => {
+  try {
+      const response = await axios.get(RESERVATIONS_API)
+      setRows(response.data)
+      console.log(response.data)
+  }
+  catch (error){
+      console.warn("Error fetching reservations:", error);
+      setAlert({
+          message: "Failed to load reservations",
+          severity: "error"
+      });
+      setOpenAlert(true);
+  }
+};
 
 {/*function to handle field validation*/}
 const handleBlur = (e, label) => {
@@ -150,6 +184,7 @@ const handleBlur = (e, label) => {
     }
   }
 };
+
 
   return (
     <Container maxWidth="xl" disableGutters>
@@ -191,6 +226,7 @@ const handleBlur = (e, label) => {
         <DataGrid
           columns={columns}
           rows={rows}
+          getRowId={(row) => row._id}
           initialState={{
             pagination: {
               paginationModel: { page: 0, pageSize: 5 },

@@ -35,7 +35,8 @@ import {
   import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
   import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
   import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-    
+  import axios from "axios";
+  import { RESERVATIONS_API } from "../constants/home/constantsReservation";
 
   export default function ReservationDialog({
     open,
@@ -54,11 +55,26 @@ import {
 
     {/*Function to close the dialog*/}
     const handleCloseDialog = () => {
+      setEmailError(false);
+      setPhoneError(false);
+      setPeopleError(false);
       setOpen(false);
     };
   
     {/*Function to save the reservation*/}
-    const saveReservation = () => {
+    const saveReservation = async () => {
+
+      const emailNoValid = validateFields(reservation.email, 'Email');
+      const phoneNoValid = validateFields(reservation.phone, 'Phone');
+      const peopleNoValid = validateFields(reservation.people, 'People')
+      if (emailNoValid || phoneNoValid || peopleNoValid){
+        setAlert({
+          message: "Please fill the data correctly",
+          severity: "warning"
+        });       
+        setOpenAlert(true);
+        return;
+      }
       const combinedDateTime = dayjs(reservation.date).set('hour', time.hour()).set('minute', time.minute());
       const reservationWithDateOnly = {
          ...reservation,
@@ -66,20 +82,40 @@ import {
       };
    
       if (action === "add") {
-         reservationWithDateOnly.id = rows.length + 1;
-         setRows([...rows, reservationWithDateOnly]);
-         setAlert({
+        try{
+          const response = await axios.post(RESERVATIONS_API, reservationWithDateOnly)
+          setRows([...rows, response.data])
+          setAlert({
             message: "Reservation added successfully",
-            severity: "success",
-         });
-         setOpenAlert(true);
+            severity: "success"
+          });
+        }catch(error){
+          console.error("Error adding reservation:", error)
+          setAlert({
+            message: "Failed to add reservation",
+            severity: "error"
+          });
+        }
+        setOpenAlert(true);
       } else if (action === "edit") {
-         setRows(rows.map((row) => (row.id === reservationWithDateOnly.id ? reservationWithDateOnly : row)));
-         setAlert({
-            message: "Reservation edited successfully",
-            severity: "success",
-         });
-         setOpenAlert(true);
+        try{
+          console.log(`${RESERVATIONS_API}/${reservationWithDateOnly._id}`);
+
+          const response = await axios.put(`${RESERVATIONS_API}/${reservationWithDateOnly._id}`, reservationWithDateOnly);
+          console.log(`${RESERVATIONS_API}/${reservationWithDateOnly._id}`);
+          setRows(rows.map((row) => (row._id === reservationWithDateOnly._id ? response.data : row)))
+          setAlert({
+            message: "Reservation updated successfully",
+            severity: "success"
+          });
+        }catch(error){
+          console.error("Error updated reservation:", error)
+          setAlert({
+            message: "Failed to update reservation",
+            severity: "error"
+          });
+        }
+        setOpenAlert(true);
       }
       handleCloseDialog();
    };
@@ -97,13 +133,21 @@ import {
   
     const [phoneError, setPhoneError] = useState(false);
     const [emailError, setEmailError] = useState(false);
+    const [peopleError, setPeopleError] = useState(false);
   
     const validatePhone = (value) => /^\d{10}$/.test(value);
     const validateEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   
     const handleBlur = (e, label) => {
+      validateFields(e.target.value, label);
+    };
+
+
+    {/*Function to validate fields*/}
+    const validateFields = (value, label) => {
+      let isValid = false;
       if (label === "Phone") {
-        const isValid = validatePhone(e.target.value);
+        isValid = validatePhone(value);
         setPhoneError(!isValid);
         if (!isValid) {
           setAlert({ message: "Invalid phone number", severity: "error" });
@@ -111,15 +155,24 @@ import {
           console.warn("Invalid phone number entered")
         }
       } else if (label === "Email") {
-        const isValid = validateEmail(e.target.value);
+        isValid = validateEmail(value);
         setEmailError(!isValid);
         if (!isValid) {
           setAlert({ message: "Invalid email", severity: "error" });
           setOpenAlert(true);
           console.warn("Invalid email entered")
         }
+      } else if (label === "People") {
+        isValid = value && value > 0;
+        setPeopleError(!isValid);
+        if (!isValid) {
+          setAlert({ message: "Invalid people", severity: "error" });
+          setOpenAlert(true);
+          console.warn("Invalid people entered")
+        }
       }
-    };
+      return !isValid;
+    }
   
     const [time, setTime] = useState(dayjs().set("hour", 8).set("minute", 0));  
 
@@ -331,6 +384,9 @@ import {
                   name="people"
                   value={reservation.people}
                   onChange={handleChange}
+                  onBlur={(e) => handleBlur(e, 'People')} 
+                  error={peopleError} 
+                  helperText={peopleError ? "Invalid people number" : ""}
                   color="primary"
                   sx={{
                     width: '100%',

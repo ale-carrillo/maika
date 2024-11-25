@@ -9,10 +9,10 @@ import {
   Box,
   Grid,
 } from "@mui/material";
-import axios from "axios"; 
+import axios from "axios";
 
 function OrderForm({ onAddOrder, order }) {
-  const [name, setName] = useState("");
+  const [name, setName] = useState(""); // Campo combinado para First Name y Last Name
   const [table, setTable] = useState("");
   const [selectedDishes, setSelectedDishes] = useState([{ dish: "", quantity: 1 }]);
   const [menuItems, setMenuItems] = useState([]); // Menú vacío inicialmente
@@ -65,7 +65,7 @@ function OrderForm({ onAddOrder, order }) {
         .filter((item) => item.dish)
         .map((item) => {
           const selectedMenuItem = menuItems.find(
-            (menuItem) => menuItem.meal === item.dish 
+            (menuItem) => menuItem.meal === item.dish
           );
           return {
             name: item.dish,
@@ -97,8 +97,9 @@ function OrderForm({ onAddOrder, order }) {
   return (
     <Box sx={{ padding: 2 }}>
       <TextField
-        label="Guest Name"
+        label="Full Name"
         fullWidth
+        placeholder="Enter first and last name"
         value={name}
         onChange={(e) => setName(e.target.value)}
         margin="normal"
@@ -106,9 +107,12 @@ function OrderForm({ onAddOrder, order }) {
       <TextField
         label="Table"
         fullWidth
+        type="number"
+        placeholder="Enter table number (1-100)"
         value={table}
         onChange={(e) => setTable(e.target.value)}
         margin="normal"
+        inputProps={{ min: 1, max: 100 }}
       />
       {selectedDishes.map((item, index) => (
         <Grid container spacing={2} key={index} style={{ marginBottom: "16px" }}>
@@ -121,8 +125,8 @@ function OrderForm({ onAddOrder, order }) {
                 onChange={(e) => handleDishChange(index, e.target.value)}
               >
                 {menuItems.map((menuItem) => (
-                  <MenuItem key={menuItem._id} value={menuItem.meal}> {/* Cambié "name" a "meal" */}
-                    {menuItem.meal} - ${menuItem.price.toFixed(2)} {/* Cambié "name" a "meal" */}
+                  <MenuItem key={menuItem._id} value={menuItem.meal}>
+                    {menuItem.meal} - ${menuItem.price.toFixed(2)}
                   </MenuItem>
                 ))}
               </Select>

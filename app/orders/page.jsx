@@ -41,48 +41,42 @@ export default function App() {
 
   // Function to handle the saving of an order (create/update)
   const handleSaveOrder = async (order) => {
-    try {
-      let response;
-      if (currentOrderId) {
-        // Update existing order
+    let response;
+  
+    if (currentOrderId) {
+      // Update existing order
+      try {
         response = await axios.put(`http://localhost:5000/api/v1/orders/${currentOrderId}`, order);
         setOrders((prevOrders) =>
           prevOrders.map((o) => (o._id === response.data._id ? response.data : o))
         );
         setAlert({ severity: "success", message: "Order updated successfully!" });
-      } else {
-        // Create new order
+      } catch (error) {
+        console.error("Error updating order:", error);
+        if (error.response?.status === 400) {
+          setAlert({ severity: "error", message: "Invalid information provided for update." });
+        } else {
+          setAlert({ severity: "error", message: "Failed to update order. Server error." });
+        }
+      }
+    } else {
+      // Create new order
+      try {
         response = await axios.post("http://localhost:5000/api/v1/orders", order);
         setOrders((prevOrders) => [...prevOrders, response.data]);
         setAlert({ severity: "success", message: "Order created successfully!" });
-      }
-      setOpenAlert(true);
-    } catch (error) {
-      console.error("Error saving order:", error);
-  
-      if (error.response) {
-        // Known error from server (likely validation)
-        if (error.response.status === 400) {
-          const errorDetails = error.response.data.details || {};
-          const errorMessage = Object.entries(errorDetails)
-            .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
-            .join("; ");
-          setAlert({ severity: "error", message: `Order not created. Validation errors` });
+      } catch (error) {
+        console.error("Error creating order:", error);
+        if (error.response?.status === 400) {
+          setAlert({ severity: "error", message: "Invalid information provided for creation." });
         } else {
-          setAlert({ severity: "error", message: `Order not created. Server error: ${error.response.data.error}` });
+          setAlert({ severity: "error", message: "Failed to create order. Server error." });
         }
-      } else if (error.request) {
-        // No response from server
-        setAlert({ severity: "error", message: "Order not created. No response from server." });
-      } else {
-        // Other errors
-        setAlert({ severity: "error", message: `Order not created. Error: ${error.message}` });
       }
-  
-      setOpenAlert(true);
-    } finally {
-      setOpenDialog(false); // Ensure the dialog is closed after the try/catch
     }
+  
+    setOpenAlert(true);
+    setOpenDialog(false); // Ensure the dialog is closed
   };
   
   // Function to handle the deletion of an order

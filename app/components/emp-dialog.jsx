@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import axios from "axios";
+import { EMPLOYEE_API } from "../constants/employee/constants";
 
 export default function EmpDialog({
   open,
@@ -51,14 +52,14 @@ export default function EmpDialog({
       }
 
       if (action === "add") {
-        const response = await axios.post("http://127.0.0.1:5000/api/v1/staff", emp);
+        const response = await axios.post(EMPLOYEE_API, emp);
         setRows((prevRows) => [...prevRows, response.data]);
         setAlert({
           message: "Employee added successfully",
           severity: "success",
         });
       } else if (action === "edit") {
-        const response = await axios.put(`http://127.0.0.1:5000/api/v1/staff/${emp._id}`, emp);
+        const response = await axios.put(`${EMPLOYEE_API}/${emp._id}`, emp);
         if (response.data === "The employee is already up-to-date") {
           setAlert({
             message: "No changes were made, the employee is already up-to-date.",

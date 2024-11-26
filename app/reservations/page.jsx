@@ -8,7 +8,6 @@ import { useState, useEffect  } from "react";
 
 import { DataGrid } from "@mui/x-data-grid";
 import Alerts from "../components/alerts";
-import { initialRows } from "../constants/home/constantsReservation";
 import ReservationDialog from "../components/reservation-dialog";
 
 {/*Importing Material-UI Icons*/}
@@ -17,7 +16,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import axios from "axios";
-import { RESERVATIONS_API } from "../constants/home/constantsReservation";
+import { RESERVATIONS_API } from "../constants/reservations/constants";
 
 
 export default function Reservations() {

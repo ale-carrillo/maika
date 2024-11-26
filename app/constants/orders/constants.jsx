@@ -1,0 +1,1 @@
+export const ORDERS_API = "http://order_api:5000/api/v1/orders";

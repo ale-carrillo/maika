@@ -14,6 +14,7 @@ import Grid from "@mui/material/Grid2"; // Use the correct Grid import
 import OrderForm from "./OrderForm"; // Import components
 import Alerts from "../components/alerts"; // Import the Alerts component
 import axios from "axios";
+import { ORDERS_API } from '../constants/orders/constants'; // Import the API constant
 
 export default function App() {
   const [orders, setOrders] = useState([]); // State to manage the list of orders
@@ -25,7 +26,7 @@ export default function App() {
   // Function to fetch orders from the API
   const fetchOrders = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/v1/orders");
+      const response = await axios.get(ORDERS_API);
       setOrders(response.data);
       console.log("Orders fetched successfully:", response.data);
     } catch (error) {
@@ -46,7 +47,7 @@ export default function App() {
     if (currentOrderId) {
       // Update existing order
       try {
-        response = await axios.put(`http://localhost:5000/api/v1/orders/${currentOrderId}`, order);
+        response = await axios.put(`${ORDERS_API}/${currentOrderId}`, order);
         setOrders((prevOrders) =>
           prevOrders.map((o) => (o._id === response.data._id ? response.data : o))
         );
@@ -62,7 +63,7 @@ export default function App() {
     } else {
       // Create new order
       try {
-        response = await axios.post("http://localhost:5000/api/v1/orders", order);
+        response = await axios.post(ORDERS_API, order);
         setOrders((prevOrders) => [...prevOrders, response.data]);
         setAlert({ severity: "success", message: "Order created successfully!" });
       } catch (error) {
@@ -82,7 +83,6 @@ export default function App() {
   // Function to handle the deletion of an order
   const handleDeleteOrder = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/v1/orders/${id}`);
       setOrders((prevOrders) => prevOrders.filter((order) => order._id !== id));
       setAlert({ severity: "success", message: "Order deleted successfully!" });
     } catch (error) {

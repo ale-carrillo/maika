@@ -1,0 +1,1 @@
+export const RESERVATIONS_API = "http://reservations_api:5000/api/v1/reservations";

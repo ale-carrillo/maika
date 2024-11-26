@@ -36,7 +36,7 @@ import {
   import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
   import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
   import axios from "axios";
-  import { RESERVATIONS_API } from "../constants/home/constantsReservation";
+  import { RESERVATIONS_API } from "../constants/reservations/constants";
 
   export default function ReservationDialog({
     open,

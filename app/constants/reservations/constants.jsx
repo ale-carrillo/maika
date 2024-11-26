@@ -1,1 +1,1 @@
-export const RESERVATIONS_API = "http://reservations_api:5000/api/v1/reservations";
+export const RESERVATIONS_API = "http://127.0.0.1:5000/api/v1/reservations";

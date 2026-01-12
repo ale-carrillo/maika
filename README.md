@@ -12,7 +12,10 @@ yarn dev
 pnpm dev
 # or
 bun dev
+bfjdkfncnckxmdnckcnnfnclfmdndnfkfnfbfnfnfmfnfnfnfngngnngngngngngngngngngngngngngngngngngngngmgngnfnfngngngngngngngnggnfnfnjgjfjdkdkgnfndnfnfnfnfnfnngngngnfnfnfngngnfndkjfbfndnfkjgnfndnfkckkdjebgnckkdjgkfkdjfbckldjrbgnckkdbgbcnkcjdbfnckkcjdbdndlkcbfbsjkanaabajaikanabshsisnsbfjfkdbdkf no bd un bombo budnekd vi vdbd conocidísimos hi vi jjjjvyjdsusjhsshshhs
+
 ```
+
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
